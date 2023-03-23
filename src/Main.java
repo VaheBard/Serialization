@@ -45,7 +45,7 @@ public class Main {
             String enter = scanner.nextLine();
 
             if ("end".equals(enter)) {
-                System.out.println("Вы завершили покупки\n");
+                System.out.println("Вы завершили покупки, к оплате " + basket.getSum() + " руб\n");
                 break;
             }
             String[] parts = enter.split(" ");

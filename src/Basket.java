@@ -2,7 +2,6 @@ import java.io.*;
 import java.util.Arrays;
 
 public class Basket implements Serializable {
-    private static final long serialVersionUID = 1L;
     private String[] products;
     private int[] prices;
     private int[] totalBasket;
@@ -48,5 +47,9 @@ public class Basket implements Serializable {
             System.out.println(ex.getMessage());
         }
         return basket;
+    }
+
+    public int getSum() {
+        return sum;
     }
 }
