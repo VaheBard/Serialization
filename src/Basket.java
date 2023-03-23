@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.Arrays;
-
 
 public class Basket implements Serializable {
     private static String[] products;
@@ -9,7 +7,6 @@ public class Basket implements Serializable {
     private static int sum;
 
     public Basket(String[] productsBasket, int[] pricesBasket) {
-//конструктор, принимающий массив цен и названий продуктов;
         this.products = productsBasket;
         this.prices = pricesBasket;
         this.totalBasket = new int[products.length];
@@ -17,22 +14,19 @@ public class Basket implements Serializable {
     }
 
     public void addToCart(int productNum, int amount) {
-//метод добавления amount штук продукта номер productNum в корзину
-        int currentPrice = prices[productNum];  //цена этого продукта
+        int currentPrice = prices[productNum];
         totalBasket[productNum] += amount;
         sum += currentPrice * amount;
     }
 
     public void printCart() {
-//метод вывода на экран покупательской корзины.
         for (int i = 0; i < totalBasket.length; i++) {
             if (!(totalBasket[i] == 0)) {
-                System.out.printf("%s %d шт. по %d руб./шт. - %d руб в сумме; \n",
-                        products[i], totalBasket[i], prices[i],
-                        (totalBasket[i] * prices[i]));
+                System.out.println(products[i] + " " + totalBasket[i] + " шт, по цене " +
+                        prices[i] + " руб/шт " + totalBasket[i] * prices[i] +
+                        " руб в сумме");
             }
         }
-        System.out.printf("Итого: %d руб. \n", sum);
     }
 
     public void saveTxt(File textFile) {

@@ -36,7 +36,7 @@ public class Main {
         } else {
             file.createNewFile();
 
-            System.out.print("Покупка начинается с пустой корзины! ");
+            System.out.print("Корзина пустая! ");
         }
         int total = 0;
 
