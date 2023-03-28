@@ -1,16 +1,27 @@
 import java.io.*;
 
 public class Basket implements Serializable {
-    private static String[] products;
-    private static int[] prices;
-    private static int[] totalBasket;
-    private static int sum;
+    /*если поля будут статические, то они пренадлежат не объекту а классу.
+     как следствие, изменить значения только для одного объекта корзины
+      не будет возможным. Поэтому *//**ПОЛЯ ДОЛЖНЫ БЫТЬ НЕ СТАТИЧЕСКИЕ*/
+    private final String[] products;
+    private final int[] prices;
+    private final int[] totalBasket;
+    private int sum;
 
     public Basket(String[] productsBasket, int[] pricesBasket) {
         this.products = productsBasket;
         this.prices = pricesBasket;
         this.totalBasket = new int[products.length];
         this.sum = 0;
+    }
+
+    public Basket(String[] products, int[] prices, int[] totalBasket, int sum) {
+        /*этот конструктор создали для восстановления объекта из файла*/
+        this.products = products;
+        this.prices = prices;
+        this.totalBasket = totalBasket;
+        this.sum = sum;
     }
 
     public void addToCart(int productNum, int amount) {
@@ -47,25 +58,38 @@ public class Basket implements Serializable {
     }
 
     public static Basket loadFromTxtFile(File textFile) {
+        String[] loadedProducts;
+        int[] loadedPrices;
+        int[] loadedTotalBasket;
+        int loadedSum;
         try (
                 BufferedReader buf = new BufferedReader(new FileReader(textFile))
+                /*создаем объект класса BufferedReader, который будет посьрочно читать файл,
+                * передаваемый в аргумент этому методу */
         ) {
 
-            String[] strProd = buf.readLine().split(" ");
-            for (int i = 0; i < products.length; i++) {
-                products[i] = strProd[i];
-            }
+            loadedProducts = buf.readLine().split(" ");
+            /*первая сторка прочтена, значение ввиде массива типа стринг передана loadedProducts*/
             String[] priceStr = buf.readLine().split(" ");
-            for (int i = 0; i < prices.length; i++) {
-                prices[i] = Integer.parseInt(priceStr[i]);
+            /*вторая строка прочтена, полученныя значения типа стринг приведем в инт, и поочередно
+            помещаем в массив loadedPrices*/
+            loadedPrices = new int[priceStr.length];
+            for (int i = 0; i < priceStr.length; i++) {
+                loadedPrices[i] = Integer.parseInt(priceStr[i]);
             }
 
             String[] strPrice = buf.readLine().split(" ");
-            for (int i = 0; i < totalBasket.length; i++) {
-                totalBasket[i] = Integer.parseInt(strPrice[i]);
+            /*третья строка прочтена, полученныя значения типа стринг приведем в инт, и поочередно
+            помещаем в массив loadedBasket*/
+            loadedTotalBasket = new int[strPrice.length];
+            for (int i = 0; i < strPrice.length; i++) {
+                loadedTotalBasket[i] = Integer.parseInt(strPrice[i]);
             }
             String strSum = buf.readLine();
-            sum = Integer.parseInt(strSum);
+            /*четвертая строка прочтена, там одно значение типа, приведем его в инт
+            * и полученный присвоим loadedSum*/
+            loadedSum = Integer.parseInt(strSum);
+            return new Basket(loadedProducts, loadedPrices, loadedTotalBasket, loadedSum);
 
         } catch (IOException ex) {
             System.out.println(ex.getMessage());

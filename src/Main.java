@@ -15,7 +15,7 @@ public class Main {
         int[] prices = {50, 14, 80};
         System.out.println("Список возможных товаров для покупки");
 
-//выводим на экран информацию о продуктах и их цен с помощью цыкла for
+        //выводим на экран информацию о продуктах и их цен с помощью цыкла for
         for (int i = 0; i < 3; i++) {
             System.out.println((i + 1) + ". " + products[i] + " " + prices[i] + " руб/шт");
         }
@@ -24,25 +24,24 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        Basket basket = new Basket(products, prices);
-        /*Проверяем существование файла, если его нет, то все начинается с нуля, иначе загружается существующая корзина
-        и следующие покупки добавляются на нее
-         */
+        Basket basket = null;
+        /*Проверяем существование файла, если его нет, то все начинается с нуля, иначе загружается
+         существующая корзина и следующие покупки добавляются на нее*/
         if (file.exists()) {
-            Basket.loadFromTxtFile(file);
+            System.out.println("\nКорзина не пустая, в нем есть : ");
+            basket = Basket.loadFromTxtFile(file);
 
             basket.printCart();
 
         } else {
-            file.createNewFile();
+            basket = new Basket(products, prices);
 
             System.out.print("Корзина пустая! ");
         }
-        int total = 0;
 
         while (true) {
 
-            System.out.println("\nДля продолжения покупки выберите товар затем пробел зтем количество  \n" +
+            System.out.println("\nДля продолжения покупки выберите товар затем пробел зтем количество и ENTER \n" +
                     "Для завершения покупки нужно вводить end затем нажать на ENTER! ");
 
             String enter = scanner.nextLine();
@@ -55,7 +54,7 @@ public class Main {
 
             int productNumber = Integer.parseInt(parts[0]) - 1;
             int productCount = Integer.parseInt(parts[1]);
-            total += prices[productNumber] * productCount;
+
             basket.addToCart(productNumber, productCount);
             basket.saveTxt(file);
 
