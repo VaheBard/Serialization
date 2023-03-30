@@ -1,3 +1,5 @@
+
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -21,15 +23,18 @@ public class Main {
         }
 
         File file = new File("basket.txt");
+        File fileCSV = new File("log.csv");
+        File fileJSON = new File("basket.json");
 
         Scanner scanner = new Scanner(System.in);
 
         Basket basket = null;
         /*Проверяем существование файла, если его нет, то все начинается с нуля, иначе загружается
          существующая корзина и следующие покупки добавляются на нее*/
-        if (file.exists()) {
+        if (fileJSON.exists()) {
             System.out.println("\nКорзина не пустая, в нем есть : ");
-            basket = Basket.loadFromTxtFile(file);
+//             basket = Basket.loadFromTxtFile(file);
+            basket = Basket.loadFromJSON(fileJSON);
 
             basket.printCart();
 
@@ -38,6 +43,7 @@ public class Main {
 
             System.out.print("Корзина пустая! ");
         }
+        ClientLog cl = new ClientLog(basket);//создаем объект класса ClientLog
 
         while (true) {
 
@@ -47,6 +53,7 @@ public class Main {
             String enter = scanner.nextLine();
 
             if ("end".equals(enter)) {
+                cl.exportAsCSV(fileCSV);
                 System.out.println("Вы завершили покупки, к оплате " + basket.getSum() + " руб\n");
                 break;
             }
@@ -57,13 +64,15 @@ public class Main {
 
             basket.addToCart(productNumber, productCount);
             basket.saveTxt(file);
+            basket.saveJSON(fileJSON);
 
+            cl.log(productNumber + 1, productCount);
 
             System.out.println("Ваша корзина:");
             basket.printCart();
+
         }
+
+
     }
 }
-
-
-

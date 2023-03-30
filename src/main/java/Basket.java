@@ -1,4 +1,9 @@
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.*;
+import java.nio.file.Files;
+
 
 public class Basket implements Serializable {
     /*если поля будут статические, то они пренадлежат не объекту а классу.
@@ -40,8 +45,16 @@ public class Basket implements Serializable {
         }
     }
 
+    @Override
+    public String toString() {
+        for (int i = 0; i < products.length; i++) {
+            System.out.println(products[i] + " " + totalBasket[i]);
+        }
+        return super.toString();
+    }
+
     public void saveTxt(File textFile) {
-        try (OutputStream os = new FileOutputStream(textFile)) {
+        try (OutputStream os = Files.newOutputStream(textFile.toPath())) {
             for (String product : products)
                 os.write((product + " ").getBytes());
             os.write("\n".getBytes());
@@ -57,6 +70,17 @@ public class Basket implements Serializable {
         }
     }
 
+    public void saveJSON(File fileJSON){
+
+        try (FileWriter fileWriter = new FileWriter(fileJSON)) {
+            Gson gson = new GsonBuilder().create();
+            fileWriter.write(gson.toJson(this, Basket.class));
+//            fileWriter.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static Basket loadFromTxtFile(File textFile) {
         String[] loadedProducts;
         int[] loadedPrices;
@@ -65,7 +89,7 @@ public class Basket implements Serializable {
         try (
                 BufferedReader buf = new BufferedReader(new FileReader(textFile))
                 /*создаем объект класса BufferedReader, который будет посьрочно читать файл,
-                * передаваемый в аргумент этому методу */
+                 * передаваемый в аргумент этому методу */
         ) {
 
             loadedProducts = buf.readLine().split(" ");
@@ -87,7 +111,7 @@ public class Basket implements Serializable {
             }
             String strSum = buf.readLine();
             /*четвертая строка прочтена, там одно значение типа, приведем его в инт
-            * и полученный присвоим loadedSum*/
+             * и полученный присвоим loadedSum*/
             loadedSum = Integer.parseInt(strSum);
             return new Basket(loadedProducts, loadedPrices, loadedTotalBasket, loadedSum);
 
@@ -97,8 +121,25 @@ public class Basket implements Serializable {
         return null;
     }
 
+    public static Basket loadFromJSON(File fileJSON) throws FileNotFoundException {
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        FileReader fr = new FileReader(fileJSON);
+        return gson.fromJson(fr, Basket.class);
+    }
+
     public int getSum() {
         return sum;
+    }
+    public String[] getProducts(){
+        return products;
+    }
+    public int [] getPrices(){
+        return prices;
+    }
+    public int [] getTotalBasket(){
+        return totalBasket;
     }
 
 }
